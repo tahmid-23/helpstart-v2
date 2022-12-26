@@ -1,7 +1,14 @@
 {
   "name": "helpstart-v2",
+  "author": "tahmid-23",
   "version": "2.0.0",
   "license": "MIT",
+  "bugs": "https://github.com/tahmid-23/helpstart-v2/issues",
+  "homepage": "https://github.com/tahmid-23/helpstart-v2/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tahmid-23/helpstart-v2/"
+  },
   "private": true,
   "type": "module",
   "engines": {

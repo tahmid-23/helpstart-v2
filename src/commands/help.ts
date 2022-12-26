@@ -8,6 +8,7 @@ const AUTHOR_TAG = `<@${AUTHOR_ID}>`;
 function getHelpMessage(showTag: boolean): string {
   return `__**Zombies Helpstart v2**__
 *Made by ${showTag ? AUTHOR_TAG : AUTHOR_NAME}*
+See the code [here](https://github.com/tahmid-23/helpstart-v2/)
 
 __Info__:
 This bot allows you to join solos, duos, and trios with the help of voluntarily connected bots. You can start a game with the \`/helpstart\` slash command.

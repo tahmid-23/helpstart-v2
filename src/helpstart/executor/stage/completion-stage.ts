@@ -14,29 +14,19 @@ export function createDefaultCompletionState(): CompletionState {
 
 export class CompletionStage implements ExecutorStage<CompletionState> {
   start(session: HelpstartSession): void {
-    console.debug('to complete');
     if (session.request.players.length === 1) {
-      session.leader.chat('/party disband');
-    } else if (session.request.players.length > 0) {
-      session.leader.chat(`/party transfer ${session.request.players[0]}`);
+      if (session.leader.connected) {
+        session.leader.chat('/party disband');
+      }
+    }
+    for (const bot of session.botTransaction.bots) {
+      if (bot.connected) {
+        bot.chat('/party leave');
+        bot.chat('/lobby arcade');
+      }
     }
   }
   update(session: HelpstartSession, state: CompletionState): void {
-    if (state.updatesSinceStart === 4) {
-      for (const bot of session.botTransaction.bots) {
-        if (bot.connected) {
-          bot.chat('/party leave');
-        }
-      }
-    }
-    if (state.updatesSinceStart === 9) {
-      for (const bot of session.botTransaction.bots) {
-        if (bot.connected) {
-          bot.chat('/lobby arcade');
-        }
-      }
-    }
-
     ++state.updatesSinceStart;
     return;
   }

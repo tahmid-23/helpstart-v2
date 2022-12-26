@@ -1,5 +1,5 @@
 import { HelpstartBotEvents, Message } from '../../../bot/bot.js';
-import { tryFollowUp } from '../../../util/try-follow-up.js';
+import { tryFollowUp } from '../../../util/discord/try-follow-up.js';
 import { HelpstartSession } from '../../helpstart-session.js';
 import { ExecutorStage, runGenericCompletionChecks } from './executor-stage.js';
 import { COMPLETION_KEY, StageKey, WARP_KEY } from './stage-key.js';
@@ -29,11 +29,11 @@ export function createDefaultInviteState(
 }
 
 const INVITE =
-  /^-----------------------------------------------------\n(?:.* )?(.+) has invited you to join their party!\nYou have 60 seconds to accept. Click here to join!\n-----------------------------------------------------$/;
+  /^-----------------------------------------------------\n(?:.* )?(.+) has invited you to join their party!\nYou have 60 seconds to accept\. Click here to join!\n-----------------------------------------------------$/;
 const JOIN_PARTY = /^(?:.+) joined the party\.$/;
 const INVITE_IGNORED =
-  /^You cannot invite that player since they have ignored you.$/;
-const INVITE_UNABLE = /^You cannot invite that player.$/;
+  /^You cannot invite that player since they have ignored you\.$/;
+const INVITE_UNABLE = /^You cannot invite that player\.$/;
 const INVITE_UNKNOWN = /^Couldn't find a player with that name!$/;
 const INVITE_OFFLINE =
   /^You cannot invite that player since they're not online\.$/;

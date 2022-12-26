@@ -13,6 +13,8 @@ import * as vec3 from 'vec3';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Vec3 = (vec3.default as any).Vec3 as typeof vec3.Vec3;
 
+export const DISCONNECT_REASON = 'manual';
+
 export abstract class MineflayerBotAbstract
   extends (EventEmitter as new () => TypedEventEmitter<HelpstartBotEvents>)
   implements HelpstartBot
@@ -157,11 +159,10 @@ export abstract class MineflayerBotAbstract
             this.chatInterval = undefined;
           }
 
-          const bot = this.mineflayerBot;
           this.mineflayerBot = undefined;
           this.emit('end');
-          bot?.removeAllListeners();
         });
+        bot.on('error', console.error);
       } catch (error) {
         reject(error);
       }
@@ -173,7 +174,7 @@ export abstract class MineflayerBotAbstract
       throw new Error('Bot is not connected');
     }
 
-    this.mineflayerBot.quit();
+    this.mineflayerBot.quit(DISCONNECT_REASON);
   }
 }
 

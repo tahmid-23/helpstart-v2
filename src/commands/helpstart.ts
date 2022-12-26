@@ -14,7 +14,7 @@ import {
   HelpstartRequest
 } from '../helpstart/helpstart-request.js';
 import { PriorityQueue } from '../util/priority-queue.js';
-import { getName } from '../util/user.js';
+import { getName } from '../util/discord/user.js';
 import {
   GameChest,
   getChestDisplayName,

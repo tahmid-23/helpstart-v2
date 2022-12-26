@@ -1,4 +1,4 @@
-import { tryFollowUp } from '../../util/try-follow-up.js';
+import { tryFollowUp } from '../../util/discord/try-follow-up.js';
 import { HelpstartSession } from '../helpstart-session.js';
 import { ExecutionStep } from './execution-step.js';
 import { ExecutorStage } from './stage/executor-stage.js';
@@ -118,6 +118,6 @@ export class BasicHelpstartExecutor implements HelpstartExecutor {
   }
 
   getSessions(): readonly HelpstartSession[] {
-    return this.ongoing.map((exeuction) => exeuction.session);
+    return this.ongoing.map((execution) => execution.session);
   }
 }

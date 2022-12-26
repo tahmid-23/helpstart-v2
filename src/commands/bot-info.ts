@@ -7,7 +7,7 @@ import { BotRepository } from '../bot/bot-repository.js';
 import { HelpstartExecutor } from '../helpstart/executor/helpstart-executor.js';
 import { HelpstartRequest } from '../helpstart/helpstart-request.js';
 import { PriorityQueue } from '../util/priority-queue.js';
-import { getName } from '../util/user.js';
+import { getName } from '../util/discord/user.js';
 import { Command } from './command.js';
 
 export class BotInfoCommand implements Command {

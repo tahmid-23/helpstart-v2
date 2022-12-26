@@ -1,6 +1,6 @@
 import { HelpstartBotEvents, Message } from '../../../bot/bot.js';
 import { PriorityQueue } from '../../../util/priority-queue.js';
-import { tryFollowUp } from '../../../util/try-follow-up.js';
+import { tryFollowUp } from '../../../util/discord/try-follow-up.js';
 import { getChestDisplayName } from '../../../zombies/game-chest.js';
 import { GameMap } from '../../../zombies/game-map.js';
 import { ChestMode, HelpstartRequest } from '../../helpstart-request.js';

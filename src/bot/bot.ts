@@ -10,7 +10,7 @@ export interface Message {
 
 export interface HelpstartBotEvents {
   chat: (message: Message) => void;
-  end: () => void;
+  end: (reason?: string) => void;
 }
 
 export type MicrosoftAuthHandler = (

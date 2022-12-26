@@ -8,7 +8,7 @@ import { Heap, PriorityQueue } from './util/priority-queue.js';
 import { HelpstartRequest } from './helpstart/helpstart-request.js';
 import { BasicBotRepository } from './bot/bot-repository.js';
 import { BasicHelpstartExecutor } from './helpstart/executor/helpstart-executor.js';
-import { MineflayerBot } from './bot/mineflayer-bot.js';
+import { DISCONNECT_REASON, MineflayerBot } from './bot/mineflayer-bot.js';
 import {
   createDefaultWarpState,
   WarpStage
@@ -155,6 +155,7 @@ async function readBotConfig(): Promise<string[]> {
   }
 }
 
+const IP = 'hypixel.net';
 readBotConfig()
   .then(async (emails) => {
     console.debug(`Logging in ${emails.length} bots`);
@@ -162,11 +163,16 @@ readBotConfig()
       console.debug(`Logging in ${email}`);
 
       const hsBot = new MineflayerBot(email);
-      await hsBot.connect('hypixel.net');
+      await hsBot.connect(IP);
 
       const username = hsBot.username;
       hsBot.on('chat', (message) => {
         console.log(`${username}: ${message.ansiText}`);
+      });
+      hsBot.on('end', (reason) => {
+        if (reason !== DISCONNECT_REASON) {
+          setTimeout(() => hsBot.connect(IP), 1000);
+        }
       });
       botRepository.addBot(hsBot);
     }

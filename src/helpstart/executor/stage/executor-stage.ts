@@ -1,5 +1,5 @@
 import { Message } from '../../../bot/bot.js';
-import { tryFollowUp } from '../../../util/try-follow-up.js';
+import { tryFollowUp } from '../../../util/discord/try-follow-up.js';
 import {
   COMMAND_SPAM,
   PARTY_DISCONNECTED,

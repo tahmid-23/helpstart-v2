@@ -9,16 +9,14 @@ type IGNRow = {
   ign: string;
 };
 
-export abstract class SqliteDatabase implements HelpstartDatabase {
-  private connection?: Database;
+export class SqliteDatabase implements HelpstartDatabase {
+  private readonly connection: Database;
 
-  protected abstract connect(): Promise<Database>;
+  constructor(connection: Database) {
+    this.connection = connection;
+  }
 
   async queryBotAccounts(): Promise<string[]> {
-    if (!this.connection) {
-      this.connection = await this.connect();
-    }
-
     const rows = await this.connection.all<EmailRow[]>(
       'SELECT email FROM bot_account'
     );
@@ -27,10 +25,6 @@ export abstract class SqliteDatabase implements HelpstartDatabase {
   }
 
   async addUserAccount(userId: string, ign: string): Promise<void> {
-    if (!this.connection) {
-      this.connection = await this.connect();
-    }
-
     await this.connection.run(
       'INSERT INTO user_account (user_id, ign) VALUES(?, ?)',
       userId,
@@ -39,10 +33,6 @@ export abstract class SqliteDatabase implements HelpstartDatabase {
   }
 
   async queryUserAccounts(userId: string): Promise<string[]> {
-    if (!this.connection) {
-      this.connection = await this.connect();
-    }
-
     const rows = await this.connection.all<IGNRow[]>(
       'SELECT ign FROM user_account WHERE user_id = ?',
       userId
@@ -52,10 +42,6 @@ export abstract class SqliteDatabase implements HelpstartDatabase {
   }
 
   async deleteAllUserAccounts(userId: string): Promise<number | undefined> {
-    if (!this.connection) {
-      this.connection = await this.connect();
-    }
-
     const result = await this.connection.run(
       'DELETE FROM user_account WHERE user_id = ?',
       userId

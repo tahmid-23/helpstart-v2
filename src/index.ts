@@ -84,11 +84,7 @@ async function createDatabase(): Promise<sqlite.Database> {
   return db;
 }
 
-const helpstartDatabase = new (class extends SqliteDatabase {
-  protected connect(): Promise<sqlite.Database> {
-    return createDatabase();
-  }
-})();
+const helpstartDatabase = new SqliteDatabase(await createDatabase());
 
 const commands: Record<string, Command> = {
   botinfo: new BotInfoCommand(requests, botRepository, helpstartExecutor),

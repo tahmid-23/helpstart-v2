@@ -18,7 +18,7 @@
     "build": "npx tsc",
     "dev": "nodemon ./src/index.ts",
     "deploy-commands": "ts-node ./register-commands.ts",
-    "prod": "npm build && node ./dist/index.js",
+    "prod": "npm run build && node ./dist/src/index.js",
     "test": "jest"
   },
   "dependencies": {

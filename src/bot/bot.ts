@@ -5,6 +5,7 @@ import { GameMap } from '../zombies/game-map.js';
 
 export interface Message {
   plainText: string;
+  ansiText: string;
 }
 
 export interface HelpstartBotEvents {

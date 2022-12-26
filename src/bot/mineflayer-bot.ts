@@ -146,7 +146,8 @@ export abstract class MineflayerBotAbstract
           }
 
           this.emit('chat', {
-            plainText: jsonMsg.toString()
+            plainText: jsonMsg.toString(),
+            ansiText: jsonMsg.toAnsi()
           });
         });
         bot.once('end', () => {

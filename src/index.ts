@@ -163,8 +163,12 @@ readBotConfig()
       const hsBot = new MineflayerBot(email);
       hsBot.connect('hypixel.net').then(() => {
         botRepository.addBot(hsBot);
+
+        const username = hsBot.username;
+        hsBot.on('chat', (message) => {
+          console.log(`${username}: ${message.ansiText}`);
+        });
       });
-      hsBot.on('chat', console.debug);
     }
   })
   .catch(console.error);

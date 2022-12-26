@@ -1,0 +1,12 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "compilerOptions": {
+    "module": "es2022",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*", "register-commands.ts"],
+  "exclude": ["node_modules", "**/*.test.ts"],
+  "ts-node": {
+    "esm": true
+  }
+}

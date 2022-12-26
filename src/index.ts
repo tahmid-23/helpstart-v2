@@ -28,7 +28,7 @@ import {
   createDefaultInviteState
 } from './helpstart/executor/stage/invite-stage.js';
 import {
-  createDefaultSuccessState as createDefaultCompletionState,
+  createDefaultCompletionState,
   CompletionStage
 } from './helpstart/executor/stage/completion-stage.js';
 import { REQUEST_COMPARATOR } from './helpstart/request-comparator.js';

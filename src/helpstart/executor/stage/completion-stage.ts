@@ -6,7 +6,7 @@ export interface CompletionState {
   updatesSinceStart: number;
 }
 
-export function createDefaultSuccessState(): CompletionState {
+export function createDefaultCompletionState(): CompletionState {
   return {
     updatesSinceStart: 0
   };

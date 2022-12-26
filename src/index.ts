@@ -34,7 +34,6 @@ import {
 import { REQUEST_COMPARATOR } from './helpstart/request-comparator.js';
 import path from 'path';
 import * as fs from 'fs/promises';
-import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -121,10 +120,7 @@ setInterval(() => {
   helpstartExecutor.update();
 }, UPDATE_INTERVAL);
 
-const emailsPath = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  'accounts.json'
-);
+const emailsPath = path.join(process.cwd(), 'accounts.json');
 
 async function readBotConfig(): Promise<string[]> {
   try {
@@ -161,7 +157,9 @@ async function readBotConfig(): Promise<string[]> {
 
 readBotConfig()
   .then((emails) => {
+    console.debug(`Logging in ${emails.length} bots`);
     for (const email of emails) {
+      console.debug(`Logging in ${email}`);
       const hsBot = new MineflayerBot(email);
       hsBot.connect('hypixel.net').then(() => {
         botRepository.addBot(hsBot);

@@ -27,8 +27,8 @@
     "@types/uuid": "^9.0.0",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
-    "mineflayer": "^4.5.1",
     "minecraft-protocol": "^1.36.0",
+    "mineflayer": "^4.5.1",
     "typed-emitter": "^1.0.0",
     "uuid": "^9.0.0",
     "vec3": "^0.1.7"

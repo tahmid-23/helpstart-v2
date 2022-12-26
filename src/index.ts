@@ -156,19 +156,19 @@ async function readBotConfig(): Promise<string[]> {
 }
 
 readBotConfig()
-  .then((emails) => {
+  .then(async (emails) => {
     console.debug(`Logging in ${emails.length} bots`);
     for (const email of emails) {
       console.debug(`Logging in ${email}`);
-      const hsBot = new MineflayerBot(email);
-      hsBot.connect('hypixel.net').then(() => {
-        botRepository.addBot(hsBot);
 
-        const username = hsBot.username;
-        hsBot.on('chat', (message) => {
-          console.log(`${username}: ${message.ansiText}`);
-        });
+      const hsBot = new MineflayerBot(email);
+      await hsBot.connect('hypixel.net');
+
+      const username = hsBot.username;
+      hsBot.on('chat', (message) => {
+        console.log(`${username}: ${message.ansiText}`);
       });
+      botRepository.addBot(hsBot);
     }
   })
   .catch(console.error);

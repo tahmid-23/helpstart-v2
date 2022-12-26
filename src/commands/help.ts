@@ -1,4 +1,8 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import {
+  ChatInputCommandInteraction,
+  MessageFlags,
+  SlashCommandBuilder
+} from 'discord.js';
 import { Command } from './command.js';
 
 const AUTHOR_NAME = 'thamid';
@@ -43,7 +47,7 @@ export class HelpCommand implements Command {
       interaction.guild.members.cache.has(AUTHOR_ID);
     await interaction.reply({
       content: getHelpMessage(showTag),
-      ephemeral: true
+      flags: [MessageFlags.Ephemeral, MessageFlags.SuppressEmbeds]
     });
   }
 

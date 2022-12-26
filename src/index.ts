@@ -33,7 +33,10 @@ import {
 } from './helpstart/executor/stage/completion-stage.js';
 import { REQUEST_COMPARATOR } from './helpstart/request-comparator.js';
 import path from 'path';
-import * as fs from 'fs/promises';
+import * as sqlite from 'sqlite';
+import sqlite3 from 'sqlite3';
+import { SqliteDatabase } from './db/sqlite/sqlite-database.js';
+import { AccountCommand } from './commands/account.js';
 
 dotenv.config();
 
@@ -66,9 +69,31 @@ const helpstartExecutor = new BasicHelpstartExecutor(
 
 const botRepository = new BasicBotRepository();
 
+async function createDatabase(): Promise<sqlite.Database> {
+  const db = await sqlite.open({
+    filename: path.join(process.cwd(), 'helpstart.db'),
+    driver: sqlite3.Database
+  });
+
+  await Promise.all([
+    db.exec('CREATE TABLE IF NOT EXISTS bot_account (email TEXT PRIMARY KEY)'),
+    db.exec(
+      'CREATE TABLE IF NOT EXISTS user_account (user_id TEXT, ign TEXT, PRIMARY KEY(user_id, ign))'
+    )
+  ]);
+  return db;
+}
+
+const helpstartDatabase = new (class extends SqliteDatabase {
+  protected connect(): Promise<sqlite.Database> {
+    return createDatabase();
+  }
+})();
+
 const commands: Record<string, Command> = {
   botinfo: new BotInfoCommand(requests, botRepository, helpstartExecutor),
-  helpstart: new HelpstartCommand(requests, botRepository),
+  account: new AccountCommand(helpstartDatabase),
+  helpstart: new HelpstartCommand(requests, botRepository, helpstartDatabase),
   help: new HelpCommand()
 };
 
@@ -120,43 +145,9 @@ setInterval(() => {
   helpstartExecutor.update();
 }, UPDATE_INTERVAL);
 
-const emailsPath = path.join(process.cwd(), 'accounts.json');
-
-async function readBotConfig(): Promise<string[]> {
-  try {
-    await fs.writeFile(emailsPath, JSON.stringify([]), { flag: 'wx' });
-    return [];
-  } catch (error: unknown) {
-    const code = (error as NodeJS.ErrnoException).code;
-    if (!code || code !== 'EEXIST') {
-      throw error;
-    }
-
-    const contents = await fs.readFile(emailsPath, { encoding: 'utf-8' });
-    if (!contents) {
-      throw new Error('Failed to read bot config');
-    }
-
-    const jsonContents = JSON.parse(contents);
-    if (!(jsonContents instanceof Array)) {
-      throw new Error('Bot config is not an array');
-    }
-
-    const emails = [];
-    for (const email of jsonContents) {
-      if (typeof email !== 'string') {
-        throw new Error('Bot config included non-string email');
-      }
-
-      emails.push(email);
-    }
-
-    return emails;
-  }
-}
-
 const IP = 'hypixel.net';
-readBotConfig()
+helpstartDatabase
+  .queryBotAccounts()
   .then(async (emails) => {
     console.debug(`Logging in ${emails.length} bots`);
     for (const email of emails) {

@@ -26,6 +26,8 @@ import {
 } from '../zombies/game-difficulty.js';
 import { GameMap, getMapDisplayName } from '../zombies/game-map.js';
 import { Command } from './command.js';
+import { USERNAME_REGEX } from '../util/minecraft.js';
+import { HelpstartDatabase } from '../db/helpstart-database.js';
 
 type EnumLike<K extends number | string | symbol, V> = { [key in K]: V };
 
@@ -91,8 +93,6 @@ const chestsOption = (
     .setAutocomplete(true);
 };
 
-const USERNAME_REGEX = /^[a-zA-Z0-9_]{2,16}$/;
-
 export class HelpstartCommand implements Command {
   static readonly data = new SlashCommandBuilder()
     .setName('helpstart')
@@ -111,12 +111,16 @@ export class HelpstartCommand implements Command {
 
   private readonly botRepository: BotRepository;
 
+  private readonly helpstartDatabase: HelpstartDatabase;
+
   constructor(
     requests: PriorityQueue<HelpstartRequest>,
-    botRepository: BotRepository
+    botRepository: BotRepository,
+    helpstartDatabase: HelpstartDatabase
   ) {
     this.requests = requests;
     this.botRepository = botRepository;
+    this.helpstartDatabase = helpstartDatabase;
   }
 
   private parseMapRequired(
@@ -358,18 +362,38 @@ export class HelpstartCommand implements Command {
       return;
     }
 
-    const senderName = getName(interaction.user, interaction.member);
-    if (!USERNAME_REGEX.test(senderName)) {
-      await interaction.respond([]);
-      return;
-    }
+    const queryPromise = this.helpstartDatabase.queryUserAccounts(
+      interaction.user.id
+    );
+    queryPromise.catch(console.error);
+    const timeoutPromise = new Promise<never>((_resolve, reject) => {
+      setTimeout(reject, 2500); // a little under Discord's 3 second limit
+    });
 
-    await interaction.respond([
-      {
-        name: senderName,
-        value: senderName
+    await Promise.race([queryPromise, timeoutPromise]).then(async (igns) => {
+      if (igns.length !== 0) {
+        await interaction.respond(
+          igns.map((ign) => ({
+            name: ign,
+            value: ign
+          }))
+        );
+        return;
       }
-    ]);
+
+      const senderName = getName(interaction.user, interaction.member);
+      if (!USERNAME_REGEX.test(senderName)) {
+        await interaction.respond([]);
+        return;
+      }
+
+      await interaction.respond([
+        {
+          name: senderName,
+          value: senderName
+        }
+      ]);
+    });
   }
 
   async autocompleteChests(

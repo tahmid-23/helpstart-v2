@@ -6,6 +6,7 @@ import {
 } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { BotInfoCommand } from './src/commands/bot-info.js';
+import { AccountCommand } from './src/commands/account.js';
 import { HelpCommand } from './src/commands/help.js';
 import { HelpstartCommand } from './src/commands/helpstart.js';
 
@@ -25,6 +26,7 @@ const guildId = process.env.GUILD_ID;
 
 const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
 commands.push(BotInfoCommand.data.toJSON());
+commands.push(AccountCommand.data.toJSON());
 commands.push(HelpstartCommand.data.toJSON());
 commands.push(HelpCommand.data.toJSON());
 

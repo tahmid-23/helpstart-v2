@@ -19,11 +19,6 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-empty-interface': 'off',
     'n/file-extension-in-import': 'error',
-    'no-constant-condition': [
-      'error',
-      {
-        checkLoops: false
-      }
-    ]
+    'no-constant-condition': ['off']
   }
 };

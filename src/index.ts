@@ -69,22 +69,24 @@ const helpstartExecutor = new BasicHelpstartExecutor(
 
 const botRepository = new BasicBotRepository();
 
-async function createDatabase(): Promise<sqlite.Database> {
-  const db = await sqlite.open({
+async function createConnection(): Promise<sqlite.Database> {
+  const connection = await sqlite.open({
     filename: path.join(process.cwd(), 'helpstart.db'),
     driver: sqlite3.Database
   });
 
   await Promise.all([
-    db.exec('CREATE TABLE IF NOT EXISTS bot_account (email TEXT PRIMARY KEY)'),
-    db.exec(
+    connection.exec(
+      'CREATE TABLE IF NOT EXISTS bot_account (email TEXT PRIMARY KEY)'
+    ),
+    connection.exec(
       'CREATE TABLE IF NOT EXISTS user_account (user_id TEXT, ign TEXT, PRIMARY KEY(user_id, ign))'
     )
   ]);
-  return db;
+  return connection;
 }
 
-const helpstartDatabase = new SqliteDatabase(await createDatabase());
+const helpstartDatabase = new SqliteDatabase(await createConnection());
 
 const commands: Record<string, Command> = {
   botinfo: new BotInfoCommand(requests, botRepository, helpstartExecutor),

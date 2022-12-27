@@ -47,17 +47,13 @@ function createRoute(): RouteLike {
 }
 
 (async () => {
-  try {
-    console.log(createCommandLogMessage());
-    const result = await rest.put(createRoute(), {
-      body: commands
-    });
-    if (result instanceof Array) {
-      console.log(`${result.length} Slash Commands registered.`);
-    } else {
-      console.log('Slash Command registration unsuccessful');
-    }
-  } catch (error) {
-    console.error(error);
+  console.log(createCommandLogMessage());
+  const result = await rest.put(createRoute(), {
+    body: commands
+  });
+  if (result instanceof Array) {
+    console.log(`${result.length} Slash Commands registered.`);
+  } else {
+    console.log('Slash Command registration unsuccessful');
   }
 })();

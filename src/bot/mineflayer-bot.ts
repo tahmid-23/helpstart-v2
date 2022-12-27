@@ -97,16 +97,15 @@ export abstract class MineflayerBotAbstract
 
     const bot = this.mineflayerBot;
     bot.setQuickBarSlot(4);
-    const swingTimeout = setTimeout(() => {
+
+    setTimeout(() => {
       bot.swingArm('right');
       bot.once('windowOpen', () => {
-        const clickTimeout = setTimeout(() => {
+        setTimeout(() => {
           bot.clickWindow(this.getDifficultySlot(difficulty), 0, 0);
         }, 1000);
-        bot.once('end', () => clearTimeout(clickTimeout));
       });
     }, 1000);
-    bot.once('end', () => clearTimeout(swingTimeout));
   }
 
   protected abstract createMineflayerBot(options: BotOptions): Bot;

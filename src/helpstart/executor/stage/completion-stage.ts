@@ -18,6 +18,8 @@ export class CompletionStage implements ExecutorStage<CompletionState> {
       if (session.leader.connected) {
         session.leader.chat('/party disband');
       }
+    } else if (session.request.players.length > 1) {
+      session.leader.chat(`/party transfer ${session.request.players[0]}`);
     }
     for (const bot of session.botTransaction.bots) {
       if (bot.connected) {

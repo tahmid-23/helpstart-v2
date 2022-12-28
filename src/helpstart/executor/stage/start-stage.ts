@@ -23,11 +23,11 @@ export function createDefaultStartState(): StartState {
   };
 }
 
-const GAME_REJOINED = /^To leave Zombies, type \/lobby$/;
+const GAME_REJOINED = /^.+ rejoined.$/;
 const GAME_JOIN =
   /^You joined as the party leader! Use the Party Options Menu to change game settings\.$/;
 const PLAYER_QUIT = /^(.+) has quit!$/;
-const GAME_START = /^(?:\s*)Zombies(?:\s*)$/;
+const GAME_START = /^\s*Zombies\s*$/;
 const CHECK_CHEST =
   /^This Lucky Chest is not active right now! Find the active Lucky Chest in the (.+)!$/;
 

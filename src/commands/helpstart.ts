@@ -138,7 +138,7 @@ export class HelpstartCommand implements Command {
       | ChatInputCommandInteraction<CacheType>
       | AutocompleteInteraction<CacheType>
   ): GameMap | undefined {
-    const mapName = interaction.options.getString('map', true);
+    const mapName = interaction.options.getString('map');
     if (mapName) {
       return GameMap[mapName as keyof typeof GameMap];
     }
@@ -322,6 +322,7 @@ export class HelpstartCommand implements Command {
         content: `Difficulty ${GameDifficulty[difficulty]} is not valid for Alien Arcadium.`,
         ephemeral: true
       });
+      return;
     }
     const players = await this.parsePlayers(interaction);
     if (!players) {

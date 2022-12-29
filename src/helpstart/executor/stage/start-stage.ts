@@ -11,15 +11,20 @@ import { StateWithResult } from './state-with-result.js';
 
 export interface StartState extends StateWithResult {
   failedAttempts: number;
-  readonly messageQueue: Message[];
-  listener?: HelpstartBotEvents['chat'];
+  readonly messageQueues: Message[][];
+  listeners?: HelpstartBotEvents['chat'][];
+  readonly leaderQueue: Message[];
+  leaderListener?: HelpstartBotEvents['chat'];
   result?: StageKey;
 }
 
-export function createDefaultStartState(): StartState {
+export function createDefaultStartState(session: HelpstartSession): StartState {
   return {
     failedAttempts: 0,
-    messageQueue: []
+    messageQueues: Array.from({
+      length: session.botTransaction.bots.length
+    }).map(() => []),
+    leaderQueue: []
   };
 }
 
@@ -46,12 +51,38 @@ export class StartStage implements ExecutorStage<StartState> {
   }
 
   start(session: HelpstartSession, state: StartState): void {
-    const listener = (message: Message) => state.messageQueue.push(message);
-    session.leader.on('chat', listener);
-    state.listener = listener;
+    const listeners = [];
+    for (let i = 0; i < session.botTransaction.bots.length; ++i) {
+      const listener = (message: Message) => {
+        state.messageQueues[i].push(message);
+      };
+      session.botTransaction.bots[i].on('chat', listener);
+      listeners.push(listener);
+    }
+    state.listeners = listeners;
+
+    const leaderListener = (message: Message) =>
+      state.leaderQueue.push(message);
+    session.leader.on('chat', leaderListener);
+    state.leaderListener = leaderListener;
   }
   update(session: HelpstartSession, state: StartState): void {
-    for (const message of state.messageQueue) {
+    for (let i = 0; i < state.messageQueues.length; ++i) {
+      const queue = state.messageQueues[i];
+      for (const message of queue) {
+        if (
+          SELF_REJOIN.test(message.plainText) ||
+          OTHER_REJOIN.test(message.plainText)
+        ) {
+          state.result = REJOIN_KEY;
+          return;
+        }
+      }
+
+      queue.splice(0, queue.length);
+    }
+
+    for (const message of state.leaderQueue) {
       if (!runGenericCompletionChecks(session, state, message)) {
         return;
       }
@@ -61,13 +92,6 @@ export class StartStage implements ExecutorStage<StartState> {
           `${session.request.interaction.user}, failed to helpstart because someone quit the game.`
         );
         state.result = COMPLETION_KEY;
-        return;
-      }
-      if (
-        SELF_REJOIN.test(message.plainText) ||
-        OTHER_REJOIN.test(message.plainText)
-      ) {
-        state.result = REJOIN_KEY;
         return;
       }
 
@@ -127,11 +151,20 @@ export class StartStage implements ExecutorStage<StartState> {
       return;
     }
 
-    state.messageQueue.splice(0, state.messageQueue.length);
+    state.leaderQueue.splice(0, state.leaderQueue.length);
   }
   end(session: HelpstartSession, state: StartState): void {
-    if (state.listener) {
-      session.leader.removeListener('chat', state.listener);
+    if (state.listeners) {
+      for (let i = 0; i < state.listeners.length; ++i) {
+        session.botTransaction.bots[i].removeListener(
+          'chat',
+          state.listeners[i]
+        );
+      }
+    }
+
+    if (state.leaderListener) {
+      session.leader.removeListener('chat', state.leaderListener);
     }
   }
   getResult(

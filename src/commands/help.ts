@@ -65,7 +65,7 @@ Examples: \`thamid\`, \`zabolec Pan_Ktosiek\`
 
 \`difficulty\` (optional): The difficulty of the game (defaults to \`Normal\`). If \`map\` is Alien Arcadium, the difficulty must be \`Normal\`.
 
-\`chest-mode\` (optional): The "chest mode" for the game (defaults to \`None\`). \`Good Chests\` means that the bot should queue until it the chest begins in a desired location. \`Bad Chests\` means the bot should queue until the chest is not in an undesired location. \`None\` means to ignore any chests.
+\`chest-mode\` (optional): The "chest mode" for the game (defaults to \`Good Chests\` if at least one chest is specified). \`Good Chests\` means that the bot should queue until it the chest begins in a desired location. \`Bad Chests\` means the bot should queue until the chest is not in an undesired location. \`None\` means to ignore any chests.
 At least one chest must be specified for \`Good Chests\`, and at least one chest must be omitted for \`Bad Chests\`.
 
 \`chest-n\` (optional): The \`n\`th chest used for the \`chest-mode\` option.

@@ -234,19 +234,19 @@ export class HelpstartCommand implements Command {
     interaction:
       | ChatInputCommandInteraction<CacheType>
       | AutocompleteInteraction<CacheType>
-  ): ChestMode {
+  ): ChestMode | undefined {
     const chestModeName = interaction.options.getString('chest-mode');
     if (chestModeName) {
       return ChestMode[chestModeName as keyof typeof ChestMode];
     }
 
-    return ChestMode.NONE;
+    return undefined;
   }
 
   private async parseChests(
     interaction: ChatInputCommandInteraction<CacheType>,
     map: GameMap,
-    chestMode: ChestMode
+    chestMode: ChestMode | undefined
   ): Promise<[ChestMode, readonly GameChest[]] | undefined> {
     const chests: GameChest[] = [];
     const mapChests = getMapChests(map);
@@ -300,13 +300,17 @@ export class HelpstartCommand implements Command {
       return undefined;
     }
 
-    if (
-      map === GameMap.DE &&
-      chestMode === ChestMode.NONE &&
-      chests.length === 0
-    ) {
-      chests.push(GameChest.GALLERY);
-      chestMode = ChestMode.BLACKLIST;
+    if (chestMode === undefined) {
+      if (chests.length === 0) {
+        if (map === GameMap.DE) {
+          chests.push(GameChest.GALLERY);
+          chestMode = ChestMode.BLACKLIST;
+        } else {
+          chestMode = ChestMode.NONE;
+        }
+      } else {
+        chestMode = ChestMode.WHITELIST;
+      }
     }
 
     return [chestMode, chests];

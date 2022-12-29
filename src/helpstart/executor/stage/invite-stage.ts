@@ -61,10 +61,12 @@ export class InviteStage implements ExecutorStage<InviteState> {
       listeners.push(listener);
     }
     state.listeners = listeners;
+
     const leaderListener = (message: Message) => {
       state.leaderQueue.push(message);
     };
     session.leader.on('chat', leaderListener);
+    state.leaderListener = leaderListener;
   }
   update(session: HelpstartSession, state: InviteState): void {
     const totalInvites =
@@ -77,8 +79,8 @@ export class InviteStage implements ExecutorStage<InviteState> {
     for (let i = 0; i < state.messageQueues.length; ++i) {
       const queue = state.messageQueues[i];
       const bot = session.botTransaction.bots[i];
-      if (bot.username !== session.leader.username) {
-        for (const message of queue) {
+      for (const message of queue) {
+        if (bot.username !== session.leader.username) {
           const matches = message.plainText.match(INVITE);
           if (!matches || matches[1] !== session.leader.username) {
             continue;
@@ -153,6 +155,7 @@ export class InviteStage implements ExecutorStage<InviteState> {
         );
       }
     }
+
     if (state.leaderListener) {
       session.leader.removeListener('chat', state.leaderListener);
     }

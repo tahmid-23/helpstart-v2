@@ -9,6 +9,7 @@ import { BotInfoCommand } from './src/commands/bot-info.js';
 import { AccountCommand } from './src/commands/account.js';
 import { HelpCommand } from './src/commands/help.js';
 import { HelpstartCommand } from './src/commands/helpstart.js';
+import { RetryCommand } from './src/commands/retry.js';
 
 dotenv.config();
 
@@ -25,12 +26,21 @@ const clientId = process.env.CLIENT_ID;
 const guildId = process.env.GUILD_ID;
 
 const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
-commands.push(BotInfoCommand.data.toJSON());
 commands.push(AccountCommand.data.toJSON());
-commands.push(HelpstartCommand.data.toJSON());
+commands.push(BotInfoCommand.data.toJSON());
 commands.push(HelpCommand.data.toJSON());
+commands.push(HelpstartCommand.data.toJSON());
+commands.push(RetryCommand.data.toJSON());
 
-function createCommandLogMessage(): string {
+function createDeleteCommandLogMessage(): string {
+  if (guildId) {
+    return `Deleting all guild Slash Commands from ${guildId}`;
+  }
+
+  return `Deleting all global Slash Commands`;
+}
+
+function createRegisterCommandLogMessage(): string {
   if (guildId) {
     return `Registering ${commands.length} guild Slash Commands to ${guildId}`;
   }
@@ -47,13 +57,23 @@ function createRoute(): RouteLike {
 }
 
 (async () => {
-  console.log(createCommandLogMessage());
+  console.log(createDeleteCommandLogMessage());
+  const deleteResult = await rest.put(createRoute(), {
+    body: []
+  });
+  if (deleteResult instanceof Array) {
+    console.log('Slash Commands deleted.');
+  } else {
+    throw new Error('Slash Command deletion unsuccessful');
+  }
+
+  console.log(createRegisterCommandLogMessage());
   const result = await rest.put(createRoute(), {
     body: commands
   });
   if (result instanceof Array) {
-    console.log(`${result.length} Slash Commands registered.`);
+    console.log(`${result.length} Slash Commands registered`);
   } else {
-    console.log('Slash Command registration unsuccessful');
+    throw new Error('Slash Command registration unsuccessful');
   }
 })();

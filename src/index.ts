@@ -42,6 +42,7 @@ import {
   createDefaultRejoinState,
   RejoinStage
 } from './helpstart/executor/stage/rejoin-stage.js';
+import { RetryCommand } from './commands/retry.js';
 
 dotenv.config();
 
@@ -94,11 +95,19 @@ async function createConnection(): Promise<sqlite.Database> {
 
 const helpstartDatabase = new SqliteDatabase(await createConnection());
 
+const lastRequests: Record<string, HelpstartRequest> = {};
+
 const commands: Record<string, Command> = {
-  botinfo: new BotInfoCommand(requests, botRepository, helpstartExecutor),
   account: new AccountCommand(helpstartDatabase),
-  helpstart: new HelpstartCommand(requests, botRepository, helpstartDatabase),
-  help: new HelpCommand()
+  botinfo: new BotInfoCommand(requests, botRepository, helpstartExecutor),
+  help: new HelpCommand(),
+  helpstart: new HelpstartCommand(
+    requests,
+    botRepository,
+    helpstartDatabase,
+    lastRequests
+  ),
+  retry: new RetryCommand(requests, botRepository, lastRequests)
 };
 
 client.once(Events.ClientReady, () => {

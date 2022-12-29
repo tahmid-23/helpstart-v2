@@ -72,6 +72,14 @@ At least one chest must be specified for \`Good Chests\`, and at least one chest
 `;
 }
 
+function getRetryMessage(showTag: boolean): string {
+  return `${getHeader(showTag)}
+
+__Info__:
+The \`/retry\` slash command replays your last \`/helpstart\` command.
+`;
+}
+
 function helpCommand(subcommand: SlashCommandSubcommandBuilder, name: string) {
   return subcommand
     .setName(name)
@@ -84,7 +92,8 @@ export class HelpCommand implements Command {
     .setDescription('Help commands about bot usage')
     .addSubcommand((subcommand) => helpCommand(subcommand, 'account'))
     .addSubcommand((subcommand) => helpCommand(subcommand, 'botinfo'))
-    .addSubcommand((subcommand) => helpCommand(subcommand, 'helpstart'));
+    .addSubcommand((subcommand) => helpCommand(subcommand, 'helpstart'))
+    .addSubcommand((subcommand) => helpCommand(subcommand, 'retry'));
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const showTag =
@@ -111,6 +120,12 @@ export class HelpCommand implements Command {
       case 'helpstart':
         await interaction.reply({
           content: getHelpstartMessage(showTag),
+          flags: flags
+        });
+        return;
+      case 'retry':
+        await interaction.reply({
+          content: getRetryMessage(showTag),
           flags: flags
         });
         return;

@@ -28,6 +28,8 @@ import { GameMap, getMapDisplayName } from '../zombies/game-map.js';
 import { Command } from './command.js';
 import { USERNAME_REGEX } from '../util/minecraft.js';
 import { HelpstartDatabase } from '../db/helpstart-database.js';
+import { handleBotFail } from '../util/discord/bot-fail.js';
+import { sendHelpstartSuccess } from '../util/discord/helpstart-success.js';
 
 type EnumLike<K extends number | string | symbol, V> = { [key in K]: V };
 
@@ -113,14 +115,18 @@ export class HelpstartCommand implements Command {
 
   private readonly helpstartDatabase: HelpstartDatabase;
 
+  private readonly lastRequests: Record<string, HelpstartRequest>;
+
   constructor(
     requests: PriorityQueue<HelpstartRequest>,
     botRepository: BotRepository,
-    helpstartDatabase: HelpstartDatabase
+    helpstartDatabase: HelpstartDatabase,
+    lastRequests: Record<string, HelpstartRequest>
   ) {
     this.requests = requests;
     this.botRepository = botRepository;
     this.helpstartDatabase = helpstartDatabase;
+    this.lastRequests = lastRequests;
   }
 
   private parseMapRequired(
@@ -218,12 +224,7 @@ export class HelpstartCommand implements Command {
       return undefined;
     }
     if (botPlayers.length !== 0) {
-      await interaction.reply({
-        content: `Player names "${botPlayers.join(
-          ', '
-        )}" are bots in the helpstart system, so they cannot play a game.`,
-        ephemeral: true
-      });
+      await handleBotFail(interaction, botPlayers);
       return undefined;
     }
 
@@ -343,19 +344,18 @@ export class HelpstartCommand implements Command {
     }
     const [chestMode, chests] = chestsResult;
 
-    await interaction.reply({
-      content: `${interaction.user}, your request has been added to the queue. The bot will ping you when it is ready.`,
-      ephemeral: true
-    });
+    await sendHelpstartSuccess(interaction);
 
-    this.requests.push({
+    const request: HelpstartRequest = {
       interaction: interaction,
       map: map,
       difficulty: difficulty,
       players: players,
       chestMode: chestMode,
       chests: chests
-    });
+    };
+    this.requests.push(request);
+    this.lastRequests[interaction.user.id] = request;
   }
 
   async autocompletePlayers(

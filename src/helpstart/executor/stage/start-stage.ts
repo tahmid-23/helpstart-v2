@@ -23,7 +23,8 @@ export function createDefaultStartState(): StartState {
   };
 }
 
-const GAME_REJOINED = /^.+ rejoined.$/;
+const SELF_REJOIN = /^To leave Zombies, type \/lobby$/;
+const OTHER_REJOIN = /^.+ rejoined.$/;
 const GAME_JOIN =
   /^You joined as the party leader! Use the Party Options Menu to change game settings\.$/;
 const PLAYER_QUIT = /^(.+) has quit!$/;
@@ -62,7 +63,10 @@ export class StartStage implements ExecutorStage<StartState> {
         state.result = COMPLETION_KEY;
         return;
       }
-      if (GAME_REJOINED.test(message.plainText)) {
+      if (
+        SELF_REJOIN.test(message.plainText) ||
+        OTHER_REJOIN.test(message.plainText)
+      ) {
         state.result = WARP_KEY;
         return;
       }

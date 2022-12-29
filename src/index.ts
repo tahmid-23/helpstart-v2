@@ -177,7 +177,7 @@ helpstartDatabase
 
       const username = hsBot.username;
       hsBot.on('chat', (message) => {
-        console.log(`${username}: "${message.ansiText}"`);
+        console.log(`${username}: ${message.ansiText}`);
       });
       hsBot.on('end', (reason) => {
         if (reason !== DISCONNECT_REASON) {

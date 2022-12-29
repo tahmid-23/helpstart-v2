@@ -59,7 +59,7 @@ export class BasicBotRepository implements BotRepository {
     this.online.set(bot.uuid, bot);
     this.available.set(bot.uuid, bot);
     bot.chat('/language english');
-    bot.chat('/party disband');
+    bot.chat('/party leave');
     bot.chat('/lobby arcade');
     bot.once('end', () => {
       this.available.delete(bot.uuid);

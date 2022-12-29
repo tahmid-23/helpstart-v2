@@ -21,8 +21,6 @@ export function createDefaultWarpState(): WarpState {
 
 export class WarpStage implements ExecutorStage<WarpState> {
   start(session: HelpstartSession, state: WarpState): void {
-    session.leader.chat('/lobby arcade');
-
     const listener = (message: Message) => state.messageQueue.push(message);
     session.leader.on('chat', listener);
     state.listener = listener;
@@ -34,12 +32,7 @@ export class WarpStage implements ExecutorStage<WarpState> {
       }
     }
     state.messageQueue.splice(0, state.messageQueue.length);
-
     if (state.updatesSinceStart === 10) {
-      session.leader.chat('/party warp');
-      session.leader.chat('/party warp');
-    }
-    if (state.updatesSinceStart === 20) {
       session.leader.chat(`/play ${getMapMinigameName(session.request.map)}`);
       state.result = START_KEY;
       return;

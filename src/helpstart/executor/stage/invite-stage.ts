@@ -41,7 +41,6 @@ const INVITE_EXPIRED = /^The party invite to .+ has expired$/;
 
 export class InviteStage implements ExecutorStage<InviteState> {
   start(session: HelpstartSession, state: InviteState): void {
-    const leader = session.leader;
     for (const player of session.request.players) {
       session.leader.chat(`/party invite ${player}`);
     }
@@ -51,7 +50,7 @@ export class InviteStage implements ExecutorStage<InviteState> {
       }
       session.leader.chat(`/party invite ${bot.username}`);
     }
-    leader.chat('/chat party');
+    session.leader.chat('/chat party');
 
     const listeners = [];
     for (let i = 0; i < session.botTransaction.bots.length; ++i) {

@@ -6,7 +6,7 @@ import { GameMap } from '../../../zombies/game-map.js';
 import { ChestMode, HelpstartRequest } from '../../helpstart-request.js';
 import { HelpstartSession } from '../../helpstart-session.js';
 import { ExecutorStage, runGenericCompletionChecks } from './executor-stage.js';
-import { StageKey, COMPLETION_KEY, WARP_KEY } from './stage-key.js';
+import { StageKey, COMPLETION_KEY, WARP_KEY, REJOIN_KEY } from './stage-key.js';
 import { StateWithResult } from './state-with-result.js';
 
 export interface StartState extends StateWithResult {
@@ -67,7 +67,7 @@ export class StartStage implements ExecutorStage<StartState> {
         SELF_REJOIN.test(message.plainText) ||
         OTHER_REJOIN.test(message.plainText)
       ) {
-        state.result = WARP_KEY;
+        state.result = REJOIN_KEY;
         return;
       }
 

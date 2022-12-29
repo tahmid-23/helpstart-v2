@@ -17,7 +17,8 @@ import {
   INVITE_KEY,
   START_KEY,
   COMPLETION_KEY,
-  WARP_KEY
+  WARP_KEY,
+  REJOIN_KEY
 } from './helpstart/executor/stage/stage-key.js';
 import {
   createDefaultStartState,
@@ -37,6 +38,10 @@ import * as sqlite from 'sqlite';
 import sqlite3 from 'sqlite3';
 import { SqliteDatabase } from './db/sqlite/sqlite-database.js';
 import { AccountCommand } from './commands/account.js';
+import {
+  createDefaultRejoinState,
+  RejoinStage
+} from './helpstart/executor/stage/rejoin-stage.js';
 
 dotenv.config();
 
@@ -59,6 +64,7 @@ const helpstartExecutor = new BasicHelpstartExecutor(
     [INVITE_KEY]: [inviteStage, createDefaultInviteState],
     [WARP_KEY]: [new WarpStage(), createDefaultWarpState],
     [START_KEY]: [new StartStage(requests, 5), createDefaultStartState],
+    [REJOIN_KEY]: [new RejoinStage(), createDefaultRejoinState],
     [COMPLETION_KEY]: [new CompletionStage(), createDefaultCompletionState]
   },
   inviteStage,
@@ -147,16 +153,16 @@ const IP = 'hypixel.net';
 helpstartDatabase
   .queryBotAccounts()
   .then(async (emails) => {
-    console.debug(`Logging in ${emails.length} bots`);
+    console.log(`Logging in ${emails.length} bots`);
     for (const email of emails) {
-      console.debug(`Logging in ${email}`);
+      console.log(`Logging in ${email}`);
 
       const hsBot = new MineflayerBot(email);
       await hsBot.connect(IP);
 
       const username = hsBot.username;
       hsBot.on('chat', (message) => {
-        console.log(`${username}: ${message.ansiText}`);
+        console.log(`${username}: "${message.ansiText}"`);
       });
       hsBot.on('end', (reason) => {
         if (reason !== DISCONNECT_REASON) {

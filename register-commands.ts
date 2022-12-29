@@ -56,24 +56,22 @@ function createRoute(): RouteLike {
   return Routes.applicationCommands(clientId);
 }
 
-(async () => {
-  console.log(createDeleteCommandLogMessage());
-  const deleteResult = await rest.put(createRoute(), {
-    body: []
-  });
-  if (deleteResult instanceof Array) {
-    console.log('Slash Commands deleted.');
-  } else {
-    throw new Error('Slash Command deletion unsuccessful');
-  }
+console.log(createDeleteCommandLogMessage());
+const deleteResult = await rest.put(createRoute(), {
+  body: []
+});
+if (deleteResult instanceof Array) {
+  console.log('Slash Commands deleted.');
+} else {
+  throw new Error('Slash Command deletion unsuccessful');
+}
 
-  console.log(createRegisterCommandLogMessage());
-  const result = await rest.put(createRoute(), {
-    body: commands
-  });
-  if (result instanceof Array) {
-    console.log(`${result.length} Slash Commands registered`);
-  } else {
-    throw new Error('Slash Command registration unsuccessful');
-  }
-})();
+console.log(createRegisterCommandLogMessage());
+const registerResult = await rest.put(createRoute(), {
+  body: commands
+});
+if (registerResult instanceof Array) {
+  console.log(`${registerResult.length} Slash Commands registered`);
+} else {
+  throw new Error('Slash Command registration unsuccessful');
+}

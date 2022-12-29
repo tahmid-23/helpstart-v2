@@ -1,9 +1,14 @@
 import {
+  ActionRowBuilder,
   APIApplicationCommandOptionChoice,
   AutocompleteFocusedOption,
   AutocompleteInteraction,
+  ButtonBuilder,
+  ButtonInteraction,
+  ButtonStyle,
   CacheType,
   ChatInputCommandInteraction,
+  ComponentType,
   SlashCommandBuilder,
   SlashCommandStringOption
 } from 'discord.js';
@@ -29,7 +34,12 @@ import { Command } from './command.js';
 import { USERNAME_REGEX } from '../util/minecraft.js';
 import { HelpstartDatabase } from '../db/helpstart-database.js';
 import { handleBotFail } from '../util/discord/bot-fail.js';
-import { sendHelpstartSuccess } from '../util/discord/helpstart-success.js';
+import {
+  sendCancelButton,
+  sendHelpstartSuccess
+} from '../util/discord/helpstart-success.js';
+import { HelpstartExecutor } from '../helpstart/executor/helpstart-executor.js';
+import { tryFollowUp } from '../util/discord/try-follow-up.js';
 
 type EnumLike<K extends number | string | symbol, V> = { [key in K]: V };
 
@@ -111,22 +121,26 @@ export class HelpstartCommand implements Command {
 
   private readonly requests: PriorityQueue<HelpstartRequest>;
 
-  private readonly botRepository: BotRepository;
+  private readonly helpstartExecutor: HelpstartExecutor;
 
-  private readonly helpstartDatabase: HelpstartDatabase;
+  private readonly botRepository: BotRepository;
 
   private readonly lastRequests: Record<string, HelpstartRequest>;
 
+  private readonly helpstartDatabase: HelpstartDatabase;
+
   constructor(
     requests: PriorityQueue<HelpstartRequest>,
+    helpstartExecutor: HelpstartExecutor,
     botRepository: BotRepository,
-    helpstartDatabase: HelpstartDatabase,
-    lastRequests: Record<string, HelpstartRequest>
+    lastRequests: Record<string, HelpstartRequest>,
+    helpstartDatabase: HelpstartDatabase
   ) {
     this.requests = requests;
+    this.helpstartExecutor = helpstartExecutor;
     this.botRepository = botRepository;
-    this.helpstartDatabase = helpstartDatabase;
     this.lastRequests = lastRequests;
+    this.helpstartDatabase = helpstartDatabase;
   }
 
   private parseMapRequired(
@@ -344,10 +358,27 @@ export class HelpstartCommand implements Command {
     }
     const [chestMode, chests] = chestsResult;
 
-    await sendHelpstartSuccess(interaction);
+    const cancelButton = new ButtonBuilder()
+      .setCustomId('helpstart-cancel')
+      .setLabel('Cancel')
+      .setStyle(ButtonStyle.Danger);
+    const response = await sendHelpstartSuccess(interaction, cancelButton);
+    const collector = response.createMessageComponentCollector({
+      componentType: ComponentType.Button
+    });
 
+    const onComplete = () => {
+      interaction.editReply({
+        components: [
+          new ActionRowBuilder<ButtonBuilder>().addComponents(
+            ButtonBuilder.from(cancelButton).setDisabled(true)
+          )
+        ]
+      });
+    };
     const request: HelpstartRequest = {
       interaction: interaction,
+      onComplete: onComplete,
       map: map,
       difficulty: difficulty,
       players: players,
@@ -356,6 +387,13 @@ export class HelpstartCommand implements Command {
     };
     this.requests.push(request);
     this.lastRequests[interaction.user.id] = request;
+
+    await sendCancelButton(
+      collector,
+      interaction,
+      this.requests,
+      this.helpstartExecutor
+    );
   }
 
   async autocompletePlayers(

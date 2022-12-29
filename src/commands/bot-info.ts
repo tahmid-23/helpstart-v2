@@ -17,18 +17,18 @@ export class BotInfoCommand implements Command {
 
   private readonly requests: PriorityQueue<HelpstartRequest>;
 
-  private readonly botRepository: BotRepository;
-
   private readonly helpstartExecutor: HelpstartExecutor;
+
+  private readonly botRepository: BotRepository;
 
   constructor(
     requests: PriorityQueue<HelpstartRequest>,
-    botRepository: BotRepository,
-    helpstartExecutor: HelpstartExecutor
+    helpstartExecutor: HelpstartExecutor,
+    botRepository: BotRepository
   ) {
     this.requests = requests;
-    this.botRepository = botRepository;
     this.helpstartExecutor = helpstartExecutor;
+    this.botRepository = botRepository;
   }
 
   private getRequestInfo(request: HelpstartRequest): string {
@@ -51,8 +51,8 @@ export class BotInfoCommand implements Command {
       .map(this.getRequestInfo)
       .join(', ')}`;
     const sessions = `Ongoing Sessions: ${this.helpstartExecutor
-      .getSessions()
-      .map((session) => this.getRequestInfo(session.request))}`;
+      .getExecutions()
+      .map((execution) => this.getRequestInfo(execution.session.request))}`;
     return [online, busy, available, requests, sessions].join('\n');
   }
 

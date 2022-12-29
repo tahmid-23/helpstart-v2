@@ -27,8 +27,10 @@ export class CompletionStage implements ExecutorStage<CompletionState> {
         bot.chat('/lobby arcade');
       }
     }
+
+    session.request.onComplete();
   }
-  update(session: HelpstartSession, state: CompletionState): void {
+  update(_session: HelpstartSession, state: CompletionState): void {
     ++state.updatesSinceStart;
     return;
   }

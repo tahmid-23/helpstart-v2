@@ -99,15 +99,21 @@ const lastRequests: Record<string, HelpstartRequest> = {};
 
 const commands: Record<string, Command> = {
   account: new AccountCommand(helpstartDatabase),
-  botinfo: new BotInfoCommand(requests, botRepository, helpstartExecutor),
+  botinfo: new BotInfoCommand(requests, helpstartExecutor, botRepository),
   help: new HelpCommand(),
   helpstart: new HelpstartCommand(
     requests,
+    helpstartExecutor,
     botRepository,
-    helpstartDatabase,
-    lastRequests
+    lastRequests,
+    helpstartDatabase
   ),
-  retry: new RetryCommand(requests, botRepository, lastRequests)
+  retry: new RetryCommand(
+    requests,
+    helpstartExecutor,
+    botRepository,
+    lastRequests
+  )
 };
 
 client.once(Events.ClientReady, () => {

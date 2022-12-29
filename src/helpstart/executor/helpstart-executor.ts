@@ -4,15 +4,16 @@ import { ExecutionStep } from './execution-step.js';
 import { ExecutorStage } from './stage/executor-stage.js';
 import { StageKey } from './stage/stage-key.js';
 
+export interface PendingExecution {
+  readonly session: HelpstartSession;
+  step: ExecutionStep<unknown>;
+  cancel(): void;
+}
+
 export interface HelpstartExecutor {
   update(): void;
   execute(session: HelpstartSession): void;
-  getSessions(): readonly HelpstartSession[];
-}
-
-interface PendingExecution {
-  readonly session: HelpstartSession;
-  step: ExecutionStep<unknown>;
+  getExecutions(): readonly PendingExecution[];
 }
 
 export type StateGenerator<T> = (session: HelpstartSession) => T;
@@ -75,6 +76,9 @@ export class BasicHelpstartExecutor implements HelpstartExecutor {
           step: {
             stage: this.completionStage,
             state: this.completionStateGenerator(execution.session)
+          },
+          cancel: () => {
+            return;
           }
         };
         continue;
@@ -105,19 +109,39 @@ export class BasicHelpstartExecutor implements HelpstartExecutor {
   execute(session: HelpstartSession): void {
     const state = this.initalStateGenerator(session);
     this.initialStage.start(session, state);
-    this.ongoing.push({
+    const execution = {
       session: session,
       step: {
         stage: this.initialStage,
         state: state
+      },
+      cancel: () => {
+        for (let i = 0; i < this.ongoing.length; ++i) {
+          if (this.ongoing[i] === execution) {
+            this.ongoing[i].step.stage.end(
+              execution.session,
+              execution.step.state
+            );
+            this.ongoing[i].step = {
+              stage: this.completionStage,
+              state: this.completionStateGenerator(this.ongoing[i].session)
+            };
+            this.ongoing[i].step.stage.start(
+              this.ongoing[i].session,
+              this.ongoing[i].step.state
+            );
+            return;
+          }
+        }
       }
-    });
+    };
+    this.ongoing.push(execution);
 
     const message = `${session.request.interaction.user}, ${session.leader.username} will invite you to the party.`;
     tryFollowUp(session.request.interaction, message);
   }
 
-  getSessions(): readonly HelpstartSession[] {
-    return this.ongoing.map((execution) => execution.session);
+  getExecutions(): PendingExecution[] {
+    return this.ongoing;
   }
 }

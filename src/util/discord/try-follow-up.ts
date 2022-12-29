@@ -1,6 +1,9 @@
-import { CommandInteraction } from 'discord.js';
+import { ButtonInteraction, CommandInteraction } from 'discord.js';
 
-export function tryFollowUp(interaction: CommandInteraction, message: string) {
+export function tryFollowUp(
+  interaction: CommandInteraction | ButtonInteraction,
+  message: string
+) {
   interaction
     .followUp({
       content: message,

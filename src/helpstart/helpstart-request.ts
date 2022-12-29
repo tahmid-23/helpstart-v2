@@ -1,4 +1,9 @@
-import { CacheType, ChatInputCommandInteraction } from 'discord.js';
+import {
+  ButtonInteraction,
+  CacheType,
+  ChatInputCommandInteraction,
+  InteractionCollector
+} from 'discord.js';
 import { GameChest } from '../zombies/game-chest.js';
 import { GameDifficulty } from '../zombies/game-difficulty.js';
 import { GameMap } from '../zombies/game-map.js';
@@ -22,6 +27,7 @@ export function getChestModeDisplayName(mode: ChestMode): string {
 
 export interface HelpstartRequest {
   interaction: ChatInputCommandInteraction<CacheType>;
+  onComplete: () => void;
   map: GameMap;
   difficulty: GameDifficulty;
   players: readonly string[];

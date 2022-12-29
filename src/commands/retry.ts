@@ -1,12 +1,22 @@
 import {
   ChatInputCommandInteraction,
   CacheType,
-  SlashCommandBuilder
+  SlashCommandBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ComponentType,
+  ActionRowBuilder,
+  ButtonInteraction
 } from 'discord.js';
 import { BotRepository } from '../bot/bot-repository.js';
+import { HelpstartExecutor } from '../helpstart/executor/helpstart-executor.js';
 import { HelpstartRequest } from '../helpstart/helpstart-request.js';
 import { handleBotFail } from '../util/discord/bot-fail.js';
-import { sendHelpstartSuccess } from '../util/discord/helpstart-success.js';
+import {
+  sendCancelButton,
+  sendHelpstartSuccess
+} from '../util/discord/helpstart-success.js';
+import { tryFollowUp } from '../util/discord/try-follow-up.js';
 import { PriorityQueue } from '../util/priority-queue.js';
 import { Command } from './command.js';
 
@@ -17,16 +27,20 @@ export class RetryCommand implements Command {
 
   private readonly requests: PriorityQueue<HelpstartRequest>;
 
+  private readonly helpstartExecutor: HelpstartExecutor;
+
   private readonly botRepository: BotRepository;
 
   private readonly lastRequests: Record<string, HelpstartRequest>;
 
   constructor(
     requests: PriorityQueue<HelpstartRequest>,
+    helpstartExecutor: HelpstartExecutor,
     botRepository: BotRepository,
     lastRequests: Record<string, HelpstartRequest>
   ) {
     this.requests = requests;
+    this.helpstartExecutor = helpstartExecutor;
     this.botRepository = botRepository;
     this.lastRequests = lastRequests;
   }
@@ -70,16 +84,41 @@ export class RetryCommand implements Command {
       return;
     }
 
-    await sendHelpstartSuccess(interaction);
+    const cancelButton = new ButtonBuilder()
+      .setCustomId('helpstart-cancel')
+      .setLabel('Cancel')
+      .setStyle(ButtonStyle.Danger);
+    const response = await sendHelpstartSuccess(interaction, cancelButton);
+    const collector = response.createMessageComponentCollector({
+      componentType: ComponentType.Button
+    });
+    const onComplete = () => {
+      interaction.editReply({
+        components: [
+          new ActionRowBuilder<ButtonBuilder>().addComponents(
+            ButtonBuilder.from(cancelButton).setDisabled(true)
+          )
+        ]
+      });
+      tryFollowUp(interaction, `${interaction.user}, cancelled your request.`);
+    };
 
     this.requests.push({
       interaction: interaction,
+      onComplete: onComplete,
       map: lastRequest.map,
       difficulty: lastRequest.difficulty,
       players: lastRequest.players,
       chestMode: lastRequest.chestMode,
       chests: lastRequest.chests
     });
+
+    await sendCancelButton(
+      collector,
+      interaction,
+      this.requests,
+      this.helpstartExecutor
+    );
   }
 
   autocomplete(): void | Promise<void> {

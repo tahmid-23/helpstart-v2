@@ -3,7 +3,8 @@ import { tryFollowUp } from '../../../util/discord/try-follow-up.js';
 import {
   COMMAND_SPAM,
   PARTY_DISCONNECTED,
-  PARTY_LEFT
+  PARTY_LEFT,
+  SLOW_DOWN
 } from '../../../zombies/hypixel-messages.js';
 import { HelpstartSession } from '../../helpstart-session.js';
 import { COMPLETION_KEY, StageKey } from './stage-key.js';
@@ -26,7 +27,10 @@ export function runGenericCompletionChecks(
   state: StateWithResult,
   message: Message
 ): boolean {
-  if (COMMAND_SPAM.test(message.plainText)) {
+  if (
+    SLOW_DOWN.test(message.plainText) ||
+    COMMAND_SPAM.test(message.plainText)
+  ) {
     tryFollowUp(
       session.request.interaction,
       `${session.request.interaction.user}, failed to helpstart because of Hypixel ratelimiting commands.`

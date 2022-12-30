@@ -1,8 +1,8 @@
 import {
-  SlashCommandBuilder,
   ChatInputCommandInteraction,
-  SlashCommandSubcommandBuilder,
-  SlashCommandStringOption
+  SlashCommandBuilder,
+  SlashCommandStringOption,
+  SlashCommandSubcommandBuilder
 } from 'discord.js';
 import { HelpstartDatabase } from '../db/helpstart-database.js';
 import { USERNAME_REGEX } from '../util/minecraft.js';

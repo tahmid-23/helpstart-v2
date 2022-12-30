@@ -4,7 +4,6 @@ import {
   AutocompleteFocusedOption,
   AutocompleteInteraction,
   ButtonBuilder,
-  ButtonInteraction,
   ButtonStyle,
   CacheType,
   ChatInputCommandInteraction,
@@ -13,13 +12,21 @@ import {
   SlashCommandStringOption
 } from 'discord.js';
 import { BotRepository } from '../bot/bot-repository.js';
+import { HelpstartDatabase } from '../db/helpstart-database.js';
+import { HelpstartExecutor } from '../helpstart/executor/helpstart-executor.js';
 import {
   ChestMode,
   getChestModeDisplayName,
   HelpstartRequest
 } from '../helpstart/helpstart-request.js';
-import { PriorityQueue } from '../util/priority-queue.js';
+import { handleBotFail } from '../util/discord/bot-fail.js';
+import {
+  sendCancelButton,
+  sendHelpstartSuccess
+} from '../util/discord/helpstart-success.js';
 import { getName } from '../util/discord/user.js';
+import { USERNAME_REGEX } from '../util/minecraft.js';
+import { PriorityQueue } from '../util/priority-queue.js';
 import {
   GameChest,
   getChestDisplayName,
@@ -31,15 +38,6 @@ import {
 } from '../zombies/game-difficulty.js';
 import { GameMap, getMapDisplayName } from '../zombies/game-map.js';
 import { Command } from './command.js';
-import { USERNAME_REGEX } from '../util/minecraft.js';
-import { HelpstartDatabase } from '../db/helpstart-database.js';
-import { handleBotFail } from '../util/discord/bot-fail.js';
-import {
-  sendCancelButton,
-  sendHelpstartSuccess
-} from '../util/discord/helpstart-success.js';
-import { HelpstartExecutor } from '../helpstart/executor/helpstart-executor.js';
-import { tryFollowUp } from '../util/discord/try-follow-up.js';
 
 type EnumLike<K extends number | string | symbol, V> = { [key in K]: V };
 

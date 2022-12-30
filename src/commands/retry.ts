@@ -1,12 +1,11 @@
 import {
-  ChatInputCommandInteraction,
-  CacheType,
-  SlashCommandBuilder,
+  ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  CacheType,
+  ChatInputCommandInteraction,
   ComponentType,
-  ActionRowBuilder,
-  ButtonInteraction
+  SlashCommandBuilder
 } from 'discord.js';
 import { BotRepository } from '../bot/bot-repository.js';
 import { HelpstartExecutor } from '../helpstart/executor/helpstart-executor.js';

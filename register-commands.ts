@@ -5,8 +5,8 @@ import {
   Routes
 } from 'discord.js';
 import * as dotenv from 'dotenv';
-import { BotInfoCommand } from './src/commands/bot-info.js';
 import { AccountCommand } from './src/commands/account.js';
+import { BotInfoCommand } from './src/commands/bot-info.js';
 import { HelpCommand } from './src/commands/help.js';
 import { HelpstartCommand } from './src/commands/helpstart.js';
 import { RetryCommand } from './src/commands/retry.js';

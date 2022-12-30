@@ -1,7 +1,7 @@
-import sqlite3 from 'sqlite3';
 import { Database, open } from 'sqlite';
-import { SqliteDatabase } from './sqlite-database.js';
+import sqlite3 from 'sqlite3';
 import { HelpstartDatabase } from '../helpstart-database.js';
+import { SqliteDatabase } from './sqlite-database.js';
 
 let connection: Database;
 let database: HelpstartDatabase;

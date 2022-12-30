@@ -1,4 +1,4 @@
-import { User, GuildMember, APIInteractionGuildMember } from 'discord.js';
+import { APIInteractionGuildMember, GuildMember, User } from 'discord.js';
 
 export function getName(
   user: User,

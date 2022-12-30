@@ -1,12 +1,12 @@
 import { HelpstartBotEvents, Message } from '../../../bot/bot.js';
-import { PriorityQueue } from '../../../util/priority-queue.js';
 import { tryFollowUp } from '../../../util/discord/try-follow-up.js';
+import { PriorityQueue } from '../../../util/priority-queue.js';
 import { getChestDisplayName } from '../../../zombies/game-chest.js';
 import { GameMap } from '../../../zombies/game-map.js';
 import { ChestMode, HelpstartRequest } from '../../helpstart-request.js';
 import { HelpstartSession } from '../../helpstart-session.js';
 import { ExecutorStage, runGenericCompletionChecks } from './executor-stage.js';
-import { StageKey, COMPLETION_KEY, WARP_KEY, REJOIN_KEY } from './stage-key.js';
+import { COMPLETION_KEY, REJOIN_KEY, StageKey, WARP_KEY } from './stage-key.js';
 import { StateWithResult } from './state-with-result.js';
 
 export interface StartState extends StateWithResult {

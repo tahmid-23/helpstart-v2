@@ -1,9 +1,4 @@
-import {
-  ButtonInteraction,
-  CacheType,
-  ChatInputCommandInteraction,
-  InteractionCollector
-} from 'discord.js';
+import { CacheType, ChatInputCommandInteraction } from 'discord.js';
 import { GameChest } from '../zombies/game-chest.js';
 import { GameDifficulty } from '../zombies/game-difficulty.js';
 import { GameMap } from '../zombies/game-map.js';

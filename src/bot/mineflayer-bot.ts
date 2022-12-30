@@ -1,7 +1,8 @@
 import EventEmitter from 'events';
-import { createBot, Bot, BotOptions } from 'mineflayer';
+import { Bot, BotOptions, createBot } from 'mineflayer';
 import TypedEventEmitter from 'typed-emitter';
 import { v4 as uuidv4 } from 'uuid';
+import * as vec3 from 'vec3';
 import { GameDifficulty } from '../zombies/game-difficulty.js';
 import { GameMap } from '../zombies/game-map.js';
 import {
@@ -9,7 +10,6 @@ import {
   HelpstartBotEvents,
   MicrosoftAuthHandler
 } from './bot.js';
-import * as vec3 from 'vec3';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Vec3 = (vec3.default as any).Vec3 as typeof vec3.Vec3;
 

@@ -96,6 +96,8 @@ export class StartStage implements ExecutorStage<StartState> {
       }
 
       if (GAME_JOIN.test(message.plainText)) {
+        session.leader.chat('/party warp');
+        session.leader.chat('/party warp');
         session.leader.setDifficulty(session.request.difficulty);
         continue;
       }

@@ -1,8 +1,12 @@
 import { HelpstartBotEvents, Message } from '../../../bot/bot.js';
-import { getMapMinigameName } from '../../../zombies/game-map.js';
+import { tryFollowUp } from '../../../util/discord/try-follow-up.js';
+import {
+  getMapDisplayName,
+  getMapMinigameName
+} from '../../../zombies/game-map.js';
 import { HelpstartSession } from '../../helpstart-session.js';
 import { ExecutorStage, runGenericCompletionChecks } from './executor-stage.js';
-import { StageKey, START_KEY } from './stage-key.js';
+import { COMPLETION_KEY, StageKey, START_KEY } from './stage-key.js';
 import { StateWithResult } from './state-with-result.js';
 
 export interface WarpState extends StateWithResult {
@@ -19,6 +23,9 @@ export function createDefaultWarpState(): WarpState {
   };
 }
 
+const NOT_ENOUGH_SERVERS =
+  /There are no servers that have enough room for a party right now! Try again in a moment! \(.+\)/;
+
 export class WarpStage implements ExecutorStage<WarpState> {
   start(session: HelpstartSession, state: WarpState): void {
     const listener = (message: Message) => state.messageQueue.push(message);
@@ -28,6 +35,19 @@ export class WarpStage implements ExecutorStage<WarpState> {
   update(session: HelpstartSession, state: WarpState): void {
     for (const message of state.messageQueue) {
       if (!runGenericCompletionChecks(session, state, message)) {
+        return;
+      }
+
+      if (NOT_ENOUGH_SERVERS.test(message.plainText)) {
+        tryFollowUp(
+          session.request.interaction,
+          `${
+            session.request.interaction.user
+          }, failed to helpstart because not enough servers are avilable for ${getMapDisplayName(
+            session.request.map
+          )}.`
+        );
+        state.result = COMPLETION_KEY;
         return;
       }
     }

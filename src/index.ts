@@ -181,7 +181,10 @@ helpstartDatabase
       });
       hsBot.on('end', (reason) => {
         if (reason !== DISCONNECT_REASON) {
-          setTimeout(() => hsBot.connect(IP), 1000);
+          setTimeout(async () => {
+            await hsBot.connect(IP);
+            botRepository.addBot(hsBot);
+          }, 1000);
         }
       });
       botRepository.addBot(hsBot);

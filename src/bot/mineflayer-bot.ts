@@ -102,7 +102,7 @@ export abstract class MineflayerBotAbstract
       bot.swingArm('right');
       bot.once('windowOpen', () => {
         setTimeout(() => {
-          bot.clickWindow(this.getDifficultySlot(difficulty), 0, 0);
+          bot.simpleClick.leftMouse(this.getDifficultySlot(difficulty));
         }, 1000);
       });
     }, 1000);

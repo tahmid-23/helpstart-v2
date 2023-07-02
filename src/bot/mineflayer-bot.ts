@@ -127,7 +127,7 @@ export abstract class MineflayerBotAbstract
           username: this.email,
           password: this.password,
           auth: 'microsoft',
-          version: '1.12.2',
+          version: '1.16.5',
           onMsaCode: authHandler
         });
 

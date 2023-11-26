@@ -37,7 +37,7 @@ const INVITE_UNABLE = /^You cannot invite that player\.$/;
 const INVITE_UNKNOWN = /^Couldn't find a player with that name!$/;
 const INVITE_OFFLINE =
   /^You cannot invite that player since they're not online\.$/;
-const INVITE_EXPIRED = /^The party invite to .+ has expired$/;
+const INVITE_EXPIRED = /^The party invite to .+ has expired\.$/;
 
 export class InviteStage implements ExecutorStage<InviteState> {
   start(session: HelpstartSession, state: InviteState): void {

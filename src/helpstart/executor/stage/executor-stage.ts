@@ -2,6 +2,7 @@ import { Message } from '../../../bot/bot.js';
 import { tryFollowUp } from '../../../util/discord/try-follow-up.js';
 import {
   COMMAND_SPAM,
+  KICKED_JOINING,
   PARTY_DISCONNECTED,
   PARTY_LEFT,
   SLOW_DOWN
@@ -52,6 +53,14 @@ export function runGenericCompletionChecks(
     tryFollowUp(
       session.request.interaction,
       `${session.request.interaction.user}, failed to helpstart because someone left the party.`
+    );
+    state.result = COMPLETION_KEY;
+    return false;
+  }
+  if (KICKED_JOINING.test(message.plainText)) {
+    tryFollowUp(
+      session.request.interaction,
+      `${session.request.interaction.user}, failed to helpstart due to being kicked while joining a game.`
     );
     state.result = COMPLETION_KEY;
     return false;

@@ -39,13 +39,13 @@ export class BotInfoCommand implements Command {
 
   private createBotMessage(): string {
     const online = `Online: ${[...this.botRepository.online.values()]
-      .map((bot) => bot.username)
+      .map((bot) => bot.username.replaceAll('_', '\\_'))
       .join(', ')}`;
     const busy = `Busy: ${[...this.botRepository.busy.values()]
-      .map((bot) => bot.username)
+      .map((bot) => bot.username.replaceAll('_', '\\_'))
       .join(', ')}`;
     const available = `Available: ${[...this.botRepository.available.values()]
-      .map((bot) => bot.username)
+      .map((bot) => bot.username.replaceAll('_', '\\_'))
       .join(', ')}`;
     const requests = `Pending Requests: ${[...this.requests]
       .map(this.getRequestInfo)

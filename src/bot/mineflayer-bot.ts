@@ -25,7 +25,7 @@ export abstract class MineflayerBotAbstract
   private readonly password?: string;
   private readonly chatDelay: number;
   private mineflayerBot?: Bot;
-  private chatInterval: NodeJS.Timer | undefined;
+  private chatInterval: NodeJS.Timeout | undefined;
 
   constructor(email: string, password?: string, chatDelay = 500) {
     super();

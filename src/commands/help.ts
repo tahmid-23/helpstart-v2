@@ -100,8 +100,13 @@ export class HelpCommand implements Command {
       interaction.inCachedGuild() &&
       interaction.guild.members.cache.has(AUTHOR_ID);
     const flags: BitFieldResolvable<
-      Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds'>,
-      MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds
+      Extract<
+        MessageFlagsString,
+        'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'
+      >,
+      | MessageFlags.Ephemeral
+      | MessageFlags.SuppressEmbeds
+      | MessageFlags.SuppressNotifications
     > = [MessageFlags.Ephemeral, MessageFlags.SuppressEmbeds];
 
     switch (interaction.options.getSubcommand(true)) {

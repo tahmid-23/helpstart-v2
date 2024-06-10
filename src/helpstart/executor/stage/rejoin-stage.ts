@@ -13,10 +13,23 @@ export function createDefaultRejoinState(): RejoinState {
   };
 }
 
+const REJOIN_MESSAGES = [
+  "one of your fellow players rejoined someone else's game. that's bad.",
+  'I feel like rewarping for some reason',
+  'im not in ur game??? i guess ill rewarp',
+  'hypixel trolled, rewarp time',
+  'wait let me test the rewarp command',
+  'you probably know what went wrong',
+  "SOMETHING rejoined somebody else's game, please wait until I rewarp...",
+  'using timer is cheat. thats why I warped you into wrong game.',
+  'sorry, can I spectate someone first? no? ok...',
+  'did you know about /play arcade_zombies_bad_blood ? let me show you'
+];
+
 export class RejoinStage implements ExecutorStage<RejoinState> {
   start(session: HelpstartSession): void {
     session.leader.chat(
-      "A bot rejoined somebody else's game, please wait until I rewarp..."
+      REJOIN_MESSAGES[Math.floor(Math.random() * REJOIN_MESSAGES.length)]
     );
   }
   update(session: HelpstartSession, state: RejoinState): void {

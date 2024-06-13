@@ -37,6 +37,8 @@ export async function sendCancelButton(
       if (request.interaction === interaction) {
         break;
       }
+
+      poppedRequests.push(request);
     }
 
     for (const request of poppedRequests) {

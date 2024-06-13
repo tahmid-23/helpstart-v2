@@ -51,9 +51,11 @@ export async function sendCancelButton(
       }
     }
 
-    tryFollowUp(
-      buttonInteraction,
-      `${buttonInteraction.user}, cancelled your request.`
-    );
+    buttonInteraction.deferUpdate().then(() => {
+      tryFollowUp(
+        buttonInteraction,
+        `${buttonInteraction.user}, cancelled your request.`
+      );
+    });
   });
 }

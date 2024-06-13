@@ -342,6 +342,18 @@ export class HelpstartCommand implements Command {
       }
     }
 
+    for (const execution of this.helpstartExecutor.getExecutions()) {
+      if (
+        execution.session.request.interaction.user.id === interaction.user.id
+      ) {
+        await interaction.reply({
+          content: 'You can only make one request at a time.',
+          ephemeral: true
+        });
+        return;
+      }
+    }
+
     const map = this.parseMapRequired(interaction);
     const difficulty = this.parseDifficulty(interaction);
     if (map === GameMap.AA && difficulty !== GameDifficulty.NORMAL) {

@@ -40,7 +40,7 @@ export async function sendCancelButton(
     }
 
     for (const request of poppedRequests) {
-      poppedRequests.push(request);
+      requests.push(request);
     }
 
     for (const execution of helpstartExecutor.getExecutions()) {

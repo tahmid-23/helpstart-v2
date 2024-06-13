@@ -332,6 +332,16 @@ export class HelpstartCommand implements Command {
   async execute(
     interaction: ChatInputCommandInteraction<CacheType>
   ): Promise<void> {
+    for (const request of this.requests) {
+      if (request.interaction.user.id === interaction.user.id) {
+        await interaction.reply({
+          content: 'You can only make one request at a time.',
+          ephemeral: true
+        });
+        return;
+      }
+    }
+
     const map = this.parseMapRequired(interaction);
     const difficulty = this.parseDifficulty(interaction);
     if (map === GameMap.AA && difficulty !== GameDifficulty.NORMAL) {

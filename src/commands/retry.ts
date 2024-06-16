@@ -69,6 +69,28 @@ export class RetryCommand implements Command {
   async execute(
     interaction: ChatInputCommandInteraction<CacheType>
   ): Promise<void> {
+    for (const request of this.requests) {
+      if (request.interaction.user.id === interaction.user.id) {
+        await interaction.reply({
+          content: 'You can only make one request at a time.',
+          ephemeral: true
+        });
+        return;
+      }
+    }
+
+    for (const execution of this.helpstartExecutor.getExecutions()) {
+      if (
+        execution.session.request.interaction.user.id === interaction.user.id
+      ) {
+        await interaction.reply({
+          content: 'You can only make one request at a time.',
+          ephemeral: true
+        });
+        return;
+      }
+    }
+
     const lastRequest = this.lastRequests[interaction.user.id];
     if (!lastRequest) {
       interaction.reply({

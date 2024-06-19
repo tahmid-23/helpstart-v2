@@ -45,9 +45,7 @@ export class CancellAllCommand implements Command {
     this.requests.clear();
 
     for (const execution of this.helpstartExecutor.getExecutions()) {
-      if (execution.session.request.interaction === interaction) {
-        execution.cancel();
-      }
+      execution.cancel();
     }
 
     await interaction.reply({

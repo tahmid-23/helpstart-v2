@@ -43,6 +43,7 @@ import {
 import { HelpstartRequest } from './helpstart/helpstart-request.js';
 import { REQUEST_COMPARATOR } from './helpstart/request-comparator.js';
 import { Heap, PriorityQueue } from './util/priority-queue.js';
+import { CancellAllCommand } from './commands/cancel-all.js';
 
 dotenv.config();
 
@@ -88,6 +89,9 @@ async function createConnection(): Promise<sqlite.Database> {
     ),
     connection.exec(
       'CREATE TABLE IF NOT EXISTS user_account (user_id TEXT, ign TEXT, PRIMARY KEY(user_id, ign))'
+    ),
+    connection.exec(
+      'CREATE TABLE IF NOT EXISTS admin_user (user_id TEXT PRIMARY KEY)'
     )
   ]);
   return connection;
@@ -100,6 +104,11 @@ const lastRequests: Record<string, HelpstartRequest> = {};
 const commands: Record<string, Command> = {
   account: new AccountCommand(helpstartDatabase),
   botinfo: new BotInfoCommand(requests, helpstartExecutor, botRepository),
+  cancelall: new CancellAllCommand(
+    requests,
+    helpstartExecutor,
+    helpstartDatabase
+  ),
   help: new HelpCommand(),
   helpstart: new HelpstartCommand(
     requests,

@@ -48,4 +48,12 @@ export class SqliteDatabase implements HelpstartDatabase {
     );
     return result.changes;
   }
+
+  async isAdminUser(userId: string): Promise<boolean> {
+    const result = await this.connection.get(
+      'SELECT 1 FROM admin_user WHERE user_id = ?',
+      userId
+    );
+    return result !== undefined;
+  }
 }

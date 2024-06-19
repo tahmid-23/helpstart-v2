@@ -10,6 +10,8 @@ export interface PriorityQueue<T> extends Iterable<T> {
   pop(): T;
 
   push(element: T): void;
+
+  clear(): void;
 }
 
 export class Heap<T> implements PriorityQueue<T> {
@@ -105,6 +107,11 @@ export class Heap<T> implements PriorityQueue<T> {
       this.heap[parentIndex] = element;
       i = parentIndex;
     }
+  }
+
+  clear(): void {
+    this.heap.length = 0;
+    this.heapSize = 0;
   }
 
   *[Symbol.iterator](): Iterator<T> {

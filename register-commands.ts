@@ -10,6 +10,7 @@ import { BotInfoCommand } from './src/commands/bot-info.js';
 import { HelpCommand } from './src/commands/help.js';
 import { HelpstartCommand } from './src/commands/helpstart.js';
 import { RetryCommand } from './src/commands/retry.js';
+import { CancellAllCommand } from './src/commands/cancel-all.js';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ const guildId = process.env.GUILD_ID;
 const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
 commands.push(AccountCommand.data.toJSON());
 commands.push(BotInfoCommand.data.toJSON());
+commands.push(CancellAllCommand.data.toJSON());
 commands.push(HelpCommand.data.toJSON());
 commands.push(HelpstartCommand.data.toJSON());
 commands.push(RetryCommand.data.toJSON());

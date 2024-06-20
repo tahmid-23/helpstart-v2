@@ -22,7 +22,7 @@ export interface HelpstartBot extends TypedEventEmitter<HelpstartBotEvents> {
   readonly uuid: string;
   readonly connected: boolean;
   chat(message: string): void;
-  checkChest(map: Exclude<GameMap, GameMap.AA>): void;
+  checkChest(map: Exclude<Exclude<GameMap, GameMap.AA>, GameMap.PRISON>): void;
   setDifficulty(difficulty: GameDifficulty): void;
   connect(
     host: string,

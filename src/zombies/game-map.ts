@@ -1,7 +1,8 @@
 export enum GameMap {
   DE,
   BB,
-  AA
+  AA,
+  PRISON
 }
 
 export function getMapDisplayName(map: GameMap): string {
@@ -12,6 +13,8 @@ export function getMapDisplayName(map: GameMap): string {
       return 'Bad Blood';
     case GameMap.AA:
       return 'Alien Arcadium';
+    case GameMap.PRISON:
+      return 'Prison';
   }
 }
 
@@ -23,5 +26,7 @@ export function getMapMinigameName(map: GameMap): string {
       return 'arcade_zombies_bad_blood';
     case GameMap.AA:
       return 'arcade_zombies_alien_arcadium';
+    case GameMap.PRISON:
+      return 'arcade_zombies_prison';
   }
 }

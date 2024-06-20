@@ -106,6 +106,7 @@ export class StartStage implements ExecutorStage<StartState> {
       if (GAME_START.test(message.plainText)) {
         if (
           map === GameMap.AA ||
+          map === GameMap.PRISON ||
           session.request.chestMode === ChestMode.NONE
         ) {
           state.result = COMPLETION_KEY;

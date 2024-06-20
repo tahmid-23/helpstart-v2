@@ -59,6 +59,8 @@ export function getMapChests(map: GameMap | undefined): readonly GameChest[] {
       ];
     case GameMap.AA:
       return [];
+    case GameMap.PRISON:
+      return [];
     default:
       return (
         Object.values(GameChest).filter(

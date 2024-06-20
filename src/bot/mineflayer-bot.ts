@@ -55,7 +55,9 @@ export abstract class MineflayerBotAbstract
     this.messageQueue.push(message);
   }
 
-  private getChestPos(map: Exclude<GameMap, GameMap.AA>) {
+  private getChestPos(
+    map: Exclude<Exclude<GameMap, GameMap.AA>, GameMap.PRISON>
+  ) {
     switch (map) {
       case GameMap.DE:
         return new Vec3(16, 68, 17);
@@ -64,7 +66,7 @@ export abstract class MineflayerBotAbstract
     }
   }
 
-  checkChest(map: Exclude<GameMap, GameMap.AA>): void {
+  checkChest(map: Exclude<Exclude<GameMap, GameMap.AA>, GameMap.PRISON>): void {
     if (!this.mineflayerBot) {
       throw new Error('Bot is not connected');
     }

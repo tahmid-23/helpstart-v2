@@ -98,15 +98,20 @@ export abstract class MineflayerBotAbstract
     }
 
     const bot = this.mineflayerBot;
-    bot.simpleClick.leftMouse(40).then(() => {
-      setTimeout(async () => {
-        try {
-          await bot.simpleClick.leftMouse(this.getDifficultySlot(difficulty));
-        } catch (err) {
-          //
-        }
-      }, 1000);
-    });
+    bot.setQuickBarSlot(4);
+
+    setTimeout(() => {
+      bot.swingArm('right');
+      bot.once('windowOpen', () => {
+        setTimeout(async () => {
+          try {
+            await bot.simpleClick.leftMouse(this.getDifficultySlot(difficulty));
+          } catch (err) {
+            //
+          }
+        }, 1000);
+      });
+    }, 1000);
   }
 
   protected abstract createMineflayerBot(options: BotOptions): Bot;

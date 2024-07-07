@@ -167,6 +167,9 @@ export abstract class MineflayerBotAbstract
           this.mineflayerBot = undefined;
           this.emit('end');
         });
+        bot.on('kicked', (reason) => {
+          console.log(`${this.email} was kicked: ${reason}`);
+        });
         bot.on('error', console.error);
       } catch (error) {
         reject(error);

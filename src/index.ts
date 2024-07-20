@@ -92,6 +92,9 @@ async function createConnection(): Promise<sqlite.Database> {
     ),
     connection.exec(
       'CREATE TABLE IF NOT EXISTS admin_user (user_id TEXT PRIMARY KEY)'
+    ),
+    connection.exec(
+      'CREATE TABLE IF NOT EXISTS banned_user (username TEXT PRIMARY KEY)'
     )
   ]);
   return connection;

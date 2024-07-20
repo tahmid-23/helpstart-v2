@@ -185,7 +185,9 @@ export class HelpstartCommand implements Command {
     const playerInput = interaction.options
       .getString('players', true)
       .replace(/\s\s+/g, ' ');
-    const playerStrings = playerInput.split(' ');
+    const playerStrings = playerInput
+      .split(' ')
+      .map((name) => name.toLowerCase());
     const uniqueCount = playerStrings.filter(
       (player, index, arr) => arr.lastIndexOf(player) === index
     ).length;
@@ -215,8 +217,8 @@ export class HelpstartCommand implements Command {
     }
 
     const invalidPlayers = [];
-    const botNames = Object.values(this.botRepository.online).map(
-      (bot) => bot.username
+    const botNames = Object.values(this.botRepository.online).map((bot) =>
+      bot.username.toLowerCase()
     );
     const botPlayers = [];
     for (const player of playerStrings) {
@@ -238,6 +240,16 @@ export class HelpstartCommand implements Command {
     if (botPlayers.length !== 0) {
       await handleBotFail(interaction, botPlayers);
       return undefined;
+    }
+
+    for (const player of players) {
+      if (await this.helpstartDatabase.isBannedUsername(player)) {
+        await interaction.reply({
+          content: `Please don't abuse the bot.`,
+          ephemeral: true
+        });
+        return undefined;
+      }
     }
 
     return players;

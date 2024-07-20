@@ -56,4 +56,12 @@ export class SqliteDatabase implements HelpstartDatabase {
     );
     return result !== undefined;
   }
+
+  async isBannedUsername(username: string): Promise<boolean> {
+    const result = await this.connection.get(
+      'SELECT 1 FROM banned_user WHERE username = ?',
+      username
+    );
+    return result !== undefined;
+  }
 }
